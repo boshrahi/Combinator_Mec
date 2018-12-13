@@ -3,12 +3,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class Main {
@@ -19,47 +21,45 @@ public class Main {
         final String graph = Graph.NOEL;
         //TODO make 2 python program to calculate all of answers and use it as a file
 
-        // test
-        for (int numOfVRCPerApp = 1 ; numOfVRCPerApp <= 4 ; numOfVRCPerApp++){
-            Simulation2 simulation = new Simulation2(Graph.TEST, numOfVRCPerApp, numOfApps);  // just works for 2 apps for now
-            List<String> all  = simulation.combination();
-            Path file = Paths.get("test_vm"+numOfVRCPerApp+".txt");
-            Files.write(file, all, Charset.forName("UTF-8"));
-        }
+//        // test
+//        for (int numOfVRCPerApp = 1 ; numOfVRCPerApp <= 4 ; numOfVRCPerApp++){
+//            Simulation2 simulation = new Simulation2(Graph.TEST, numOfVRCPerApp, numOfApps);  // just works for 2 apps for now
+//            Path file = Paths.get("test_vm"+numOfVRCPerApp+".txt");
+//            simulation.combination(file);
+//
+//        }
         //  noel
-        for (int numOfVRCPerApp = 1 ; numOfVRCPerApp <= 4 ; numOfVRCPerApp++){
-            Simulation2 simulation = new Simulation2(Graph.NOEL, numOfVRCPerApp, numOfApps);  // just works for 2 apps for now
-            List<String> all  = simulation.combination();
-            Path file = Paths.get("noel_vm"+numOfVRCPerApp+".txt");
-            Files.write(file, all, Charset.forName("UTF-8"));
-        }
+//        for (int numOfVRCPerApp = 1 ; numOfVRCPerApp <= 4 ; numOfVRCPerApp++){
+//            Simulation2 simulation = new Simulation2(Graph.NOEL, numOfVRCPerApp, numOfApps);  // just works for 2 apps for now
+//            List<String> all  = simulation.combination();
+//            Path file = Paths.get("noel_vm"+numOfVRCPerApp+".txt");
+//            Files.write(file, all, Charset.forName("UTF-8"));
+//        }
         //  shentel
-        for (int numOfVRCPerApp = 1 ; numOfVRCPerApp <= 4 ; numOfVRCPerApp++){
+        for (int numOfVRCPerApp = 4 ; numOfVRCPerApp <= 4 ; numOfVRCPerApp++){
             Simulation2 simulation = new Simulation2(Graph.SHENTEL, numOfVRCPerApp, numOfApps);  // just works for 2 apps for now
-            List<String> all  = simulation.combination();
             Path file = Paths.get("shentel_vm"+numOfVRCPerApp+".txt");
-            Files.write(file, all, Charset.forName("UTF-8"));
+            simulation.combination(file);
         }
-        //  sago
-        for (int numOfVRCPerApp = 1 ; numOfVRCPerApp <= 4 ; numOfVRCPerApp++){
-            Simulation2 simulation = new Simulation2(Graph.SAGO, numOfVRCPerApp, numOfApps);  // just works for 2 apps for now
-            List<String> all  = simulation.combination();
-            Path file = Paths.get("sago_vm"+numOfVRCPerApp+".txt");
-            Files.write(file, all, Charset.forName("UTF-8"));
-        }
-        //  spiralight
-        for (int numOfVRCPerApp = 1 ; numOfVRCPerApp <= 4 ; numOfVRCPerApp++){
-            Simulation2 simulation = new Simulation2(Graph.SPIRALIGHT, numOfVRCPerApp, numOfApps);  // just works for 2 apps for now
-            List<String> all  = simulation.combination();
-            Path file = Paths.get("spiralight_vm"+numOfVRCPerApp+".txt");
-            Files.write(file, all, Charset.forName("UTF-8"));
-        }
+//        //  sago
+//        for (int numOfVRCPerApp = 1 ; numOfVRCPerApp <= 4 ; numOfVRCPerApp++){
+//            Simulation2 simulation = new Simulation2(Graph.SAGO, numOfVRCPerApp, numOfApps);  // just works for 2 apps for now
+//            List<String> all  = simulation.combination();
+//            Path file = Paths.get("sago_vm"+numOfVRCPerApp+".txt");
+//            Files.write(file, all, Charset.forName("UTF-8"));
+//        }
+//        //  spiralight
+//        for (int numOfVRCPerApp = 1 ; numOfVRCPerApp <= 4 ; numOfVRCPerApp++){
+//            Simulation2 simulation = new Simulation2(Graph.SPIRALIGHT, numOfVRCPerApp, numOfApps);  // just works for 2 apps for now
+//            List<String> all  = simulation.combination();
+//            Path file = Paths.get("spiralight_vm"+numOfVRCPerApp+".txt");
+//            Files.write(file, all, Charset.forName("UTF-8"));
+//        }
         //  missouri
-        for (int numOfVRCPerApp = 1 ; numOfVRCPerApp <= 4 ; numOfVRCPerApp++){
+        for (int numOfVRCPerApp = 3 ; numOfVRCPerApp <= 4 ; numOfVRCPerApp++){
             Simulation2 simulation = new Simulation2(Graph.MISSOURI, numOfVRCPerApp, numOfApps);  // just works for 2 apps for now
-            List<String> all  = simulation.combination();
             Path file = Paths.get("missouri_vm"+numOfVRCPerApp+".txt");
-            Files.write(file, all, Charset.forName("UTF-8"));
+            simulation.combination(file);
         }
     }
 
@@ -73,7 +73,8 @@ class Simulation2 {
     private int numOfApps;
     private GraphModel graph;
     private static List<VRCnodeModel> placementsForSingleApp;
-    private static List<String> allVMS;
+    //private static List<String> allVMS;
+    private static Path file1;
     //------------------------request
 
 
@@ -89,14 +90,15 @@ class Simulation2 {
     /*
      * Algorithm 1 in paper
      * */
-    List<String> combination() {
+    void combination(Path file) {
 
-        List<String> all = initialAllPlacements(numOfVRCPerApp, numOfApps, graph);
-        return all;
+       initialAllPlacements(numOfVRCPerApp, numOfApps, graph,file);
     }
 
 
-    private List<String> initialAllPlacements(int numOfVRCPerApp, int numOfApps, GraphModel graph) {
+    private void initialAllPlacements(int numOfVRCPerApp, int numOfApps, GraphModel graph, Path file) {
+
+        file1 = file;
 
         // System.out.println(enumeratePlacementCounts());
         //---------------------------------
@@ -130,16 +132,21 @@ class Simulation2 {
             model2 = list2.get(i);
             set2[i] = model2;
         }
-        allVMS = new ArrayList<>();
         Combinatorics.tuples(set1, set2)
                 .stream()
                 .map(Simulation2::tupleCombine)
                 .forEach(Simulation2::tupleWriteToList);
-        return allVMS;
+
     }
 
     private static void tupleWriteToList(String numbers) {
-        allVMS.add(numbers);
+        List<String> list = Arrays.asList(numbers);
+        try {
+            Files.write(file1, list, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private static String tupleCombine(VRCnodeModel[] vrCnodeModels) {
